@@ -1,0 +1,20 @@
+# Normalize text line endings across operating systems.
+* text=auto
+*.md text eol=lf
+*.tex text eol=lf
+*.bib text eol=lf
+*.py text eol=lf
+*.ipynb text eol=lf
+*.js text eol=lf
+*.html text eol=lf
+*.css text eol=lf
+*.sh text eol=lf
+
+# Treat documents and images as binary files.
+*.pdf binary
+*.docx binary
+*.pptx binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
