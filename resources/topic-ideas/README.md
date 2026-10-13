@@ -1,8 +1,8 @@
 # Topic shortlist: guide for the group vote
 
-We are choosing between **four topics** for our mathematical exploration project. This page gives enough information to make an informed vote: what we would explain, where the advanced mathematics comes from, what we could demonstrate live, and the main benefits and challenges. **The linked topic files are optional further reading** if you want more detail or starting references.
+This directory includes explanations of four topic ideas for our mathematical exploration project. Read this comparison page to inform your vote. Read the linked topic files if you want more detail or starting references.
 
-All four proposals focus on explaining established mathematics clearly. None requires a new algorithm or original research. The aim is a coherent group report and a 15-minute presentation, with a demonstration that helps teach the theory. We should confirm that the chosen scope goes beyond our previous coursework and meets the lecturer's expectations.
+The aim is a coherent group report and a 15-minute presentation, with a demonstration that helps teach the theory.
 
 ## At a glance
 
