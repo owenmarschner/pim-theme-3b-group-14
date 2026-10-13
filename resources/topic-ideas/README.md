@@ -5,6 +5,7 @@ Proposals for explaining established mathematics with a live educational demonst
 | Topic | Main focus | Demonstration |
 | --- | --- | --- |
 | [PageRank](pagerank.md) | Convergence and sensitivity of network rankings | Probability flowing through an editable network |
+| [Finite differences for Black–Scholes](black-scholes-finite-differences.md) | PDE discretisation, stability and convergence | Animate option prices and reveal numerical instability |
 | [Bayesian change detection](bayesian-stats.md) | Model evidence and uncertainty about one change | Did a coin's bias change? |
 | [Gaussian processes](gaussian-processes.md) | Distributions over functions and Bayesian regression | Add observations and update a regression curve and uncertainty band |
 | [Hamiltonian Monte Carlo](hamiltonian-monte-carlo.md) | Dynamics, numerical integration and invariant distributions | Compare HMC trajectories with a random-walk sampler |
