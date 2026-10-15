@@ -21,12 +21,14 @@ Everyone should understand conditional expectation, Gaussian densities, integrat
 - **GP background:** state how a kernel and observations give a posterior mean $\mu_n(x)$ and standard deviation $\sigma_n(x)$. Explain these as predictions and model-dependent uncertainty; reserve the conditioning equations for the report.
 - **Sequential decisions:** distinguish learning the entire function from finding its maximum. Explain the loop: update the surrogate → maximise a cheap acquisition function → evaluate the expensive objective → repeat until the budget is used.
 - **Expected improvement:** let $f_n^+$ be the best observed value and define $I_n(x)=\max(f(x)-f_n^+,0)$. Integrate against the Gaussian posterior to obtain
+
   $$
-  \operatorname{EI}_n(x)=(\mu_n(x)-f_n^+)\Phi(z)+\sigma_n(x)\phi(z),
+  \mathrm{EI}_n(x)=(\mu_n(x)-f_n^+)\Phi(z)+\sigma_n(x)\phi(z),
   \qquad z=\frac{\mu_n(x)-f_n^+}{\sigma_n(x)}.
   $$
+
   Define $\phi,\Phi$ as the standard normal density and distribution function. Explain EI as expected one-step gain, not a globally optimal multi-step strategy. Handle zero uncertainty using $\max(\mu_n(x)-f_n^+,0)$; in the report, show why EI increases with either mean or uncertainty when the other is held fixed.
-- **Exploration versus exploitation:** compare EI with $\operatorname{UCB}_n(x)=\mu_n(x)+\kappa\sigma_n(x)$, where $\kappa\geq0$. Explain how $\kappa$ changes the decision; no regret guarantee is claimed for a fixed setting.
+- **Exploration versus exploitation:** compare EI with $\mathrm{UCB}_n(x)=\mu_n(x)+\kappa\sigma_n(x)$, where $\kappa\geq0$. Explain how $\kappa$ changes the decision; no regret guarantee is claimed for a fixed setting.
 - **Evaluation and limitations:** assess progress by the best value actually observed. Discuss kernel misspecification, missed narrow peaks and acquisition optimisation; a small budget does not guarantee the true maximum.
 
 ## Educational demonstration
