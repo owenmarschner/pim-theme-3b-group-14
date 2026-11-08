@@ -1,0 +1,14 @@
+{
+  "name": "you-vs-bayesian-optimisation",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs",
+    "test": "node --test",
+    "fallback": "node scripts/make-fallback.mjs",
+    "prepare:site": "node scripts/prepare-site.mjs",
+    "prepare:pages": "node scripts/prepare-pages.mjs"
+  },
+  "engines": { "node": ">=24" }
+}

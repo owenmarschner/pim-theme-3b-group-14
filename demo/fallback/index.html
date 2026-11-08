@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>You vs BO · Static presentation fallback</title>
+<style>body{font:18px/1.5 system-ui,sans-serif;color:#192d43;background:#f5f7fa;margin:0}header,section{max-width:1100px;margin:auto;padding:28px}section{break-before:page;margin-bottom:30px;background:white;border:1px solid #dce3eb;border-radius:14px}img{width:100%;display:block}p{color:#52677a}a{color:#2163c7}@media print{header{display:none}section{border:0;margin:0;padding:0;break-inside:avoid}img{max-height:80vh}}</style>
+<header><h1>You vs Bayesian Optimisation</h1><p>Static fallback · presentation-v1 · five guesses each</p><p>Human inputs: 0.25, 0.6, 0.72, 0.82, 0.96. This is one illustrative match, not a performance benchmark.</p><a href="example-match.json">Full example match record</a></header>
+<section><h2>1. Three observations. Where would you look next?</h2><p>Both players start here. The human sees only these values; BO has the same data.</p><img src="01-start.svg" alt="Three observations. Where would you look next?"></section>
+<section><h2>2. Human guess 1: x = 0.25</h2><p>One evaluation each. BO’s location and result remain hidden.</p><img src="02-human-turn-1.svg" alt="Human guess 1: x = 0.25"></section>
+<section><h2>3. Human guess 2: x = 0.6</h2><p>One evaluation each. BO’s location and result remain hidden.</p><img src="02-human-turn-2.svg" alt="Human guess 2: x = 0.6"></section>
+<section><h2>4. Human guess 3: x = 0.72</h2><p>One evaluation each. BO’s location and result remain hidden.</p><img src="02-human-turn-3.svg" alt="Human guess 3: x = 0.72"></section>
+<section><h2>5. Human guess 4: x = 0.82</h2><p>One evaluation each. BO’s location and result remain hidden.</p><img src="02-human-turn-4.svg" alt="Human guess 4: x = 0.82"></section>
+<section><h2>6. Human guess 5: x = 0.96</h2><p>One evaluation each. BO’s location and result remain hidden.</p><img src="02-human-turn-5.svg" alt="Human guess 5: x = 0.96"></section>
+<section><h2>7. The reveal</h2><p>Human best: 0.969281392107. BO best: 0.888404999997. Winner: human. Eight evaluations each.</p><img src="03-reveal.svg" alt="The reveal"></section>
+<section><h2>8. BO turn 1: the decision</h2><p>EI proposes x = 0.652. Ask what BO knows before revealing the value.</p><img src="04-bo-turn-1-before.svg" alt="BO turn 1: the decision"></section>
+<section><h2>9. BO turn 1: the observation</h2><p>Observed f(0.652) = 0.463814. The posterior updates; the EI curve records the original decision.</p><img src="04-bo-turn-1-after.svg" alt="BO turn 1: the observation"></section>
+<section><h2>10. BO turn 2: the decision</h2><p>EI proposes x = 0.3505. Ask what BO knows before revealing the value.</p><img src="04-bo-turn-2-before.svg" alt="BO turn 2: the decision"></section>
+<section><h2>11. BO turn 2: the observation</h2><p>Observed f(0.3505) = 0.547918. The posterior updates; the EI curve records the original decision.</p><img src="04-bo-turn-2-after.svg" alt="BO turn 2: the observation"></section>
+<section><h2>12. BO turn 3: the decision</h2><p>EI proposes x = 1. Ask what BO knows before revealing the value.</p><img src="04-bo-turn-3-before.svg" alt="BO turn 3: the decision"></section>
+<section><h2>13. BO turn 3: the observation</h2><p>Observed f(1) = 0.043937. The posterior updates; the EI curve records the original decision.</p><img src="04-bo-turn-3-after.svg" alt="BO turn 3: the observation"></section>
+<section><h2>14. BO turn 4: the decision</h2><p>EI proposes x = 0. Ask what BO knows before revealing the value.</p><img src="04-bo-turn-4-before.svg" alt="BO turn 4: the decision"></section>
+<section><h2>15. BO turn 4: the observation</h2><p>Observed f(0) = 0.039543. The posterior updates; the EI curve records the original decision.</p><img src="04-bo-turn-4-after.svg" alt="BO turn 4: the observation"></section>
+<section><h2>16. BO turn 5: the decision</h2><p>EI proposes x = 0.4595. Ask what BO knows before revealing the value.</p><img src="04-bo-turn-5-before.svg" alt="BO turn 5: the decision"></section>
+<section><h2>17. BO turn 5: the observation</h2><p>Observed f(0.4595) = 0.485118. The posterior updates; the EI curve records the original decision.</p><img src="04-bo-turn-5-after.svg" alt="BO turn 5: the observation"></section>
+</html>

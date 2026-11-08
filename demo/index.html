@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="A local educational game about searching an unknown function with Bayesian optimisation.">
+  <title>You vs Bayesian Optimisation</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="app.js"></script>
+</head>
+<body>
+  <main>
+    <header class="masthead">
+      <div><p class="eyebrow">A GAME OF INFORMED GUESSES</p><h1>You <span>vs</span> Bayesian Optimisation</h1>
+        <p class="intro">Same hidden function. Same number of guesses. Highest value wins.</p></div>
+      <button id="new-game" class="quiet" hidden>New game</button>
+    </header>
+
+    <section id="setup" class="setup card" aria-labelledby="setup-title">
+      <div class="setup-intro"><span class="section-number">01 / THE CHALLENGE</span>
+        <h2 id="setup-title">Trust your intuition.<br>Challenge the algorithm.</h2>
+        <ul class="challenge-rules">
+          <li>Start with three known values.</li>
+          <li>Choose where to look next.</li>
+          <li>BO makes its own guesses using expected improvement.</li>
+          <li>BO’s results stay hidden until the end.</li>
+        </ul>
+        <p class="small">You see your observations only. After the reveal, explore how BO made each decision.</p>
+      </div>
+      <form id="setup-form">
+        <h3>Set up your match</h3>
+        <label for="mode">Challenge</label>
+        <select id="mode"><option value="presentation">Presentation · prepared example</option><option value="random">Random · a seeded new function</option></select>
+        <div id="seed-row" hidden><label for="seed">Random seed</label><div class="inline"><input id="seed" maxlength="120" value="classroom-1"><button id="shuffle-seed" type="button" class="quiet">New seed</button></div></div>
+        <label for="turns">Additional guesses per player</label>
+        <div class="range-row"><input id="turns" type="range" min="3" max="10" step="1" value="5"><output id="turns-label" for="turns">5</output></div>
+        <p class="small" id="budget-note">3 starting observations + 5 guesses = 8 evaluations each.</p>
+        <button type="submit" class="primary full">Start the challenge <span aria-hidden="true">→</span></button>
+        <p id="setup-error" role="alert" class="error"></p>
+      </form>
+    </section>
+
+    <section id="resume" class="card resume" hidden aria-labelledby="resume-title"><div><h2 id="resume-title">A match is waiting.</h2><p id="resume-description"></p></div><button id="resume-game" class="primary">Resume match</button><button id="discard-game" class="quiet">New game</button></section>
+
+    <section id="arena" hidden aria-label="Match">
+      <div class="scoreboard">
+        <div class="score human"><span class="score-label"><span aria-hidden="true">●</span> YOUR BEST</span><strong id="human-score">—</strong><small id="human-count"></small></div>
+        <div class="match-meta"><span class="pill" id="round-label"></span><p id="challenge-label"></p><small id="budget-label"></small></div>
+        <div class="score bo"><span class="score-label"><span aria-hidden="true">◆</span> BO’S BEST</span><strong id="bo-score">Hidden</strong><small id="bo-count"></small></div>
+      </div>
+      <div id="result" class="result" hidden><div><p class="eyebrow">THE RESULTS ARE IN</p><h2 id="result-title"></h2><p id="result-detail"></p></div><button id="open-replay" class="primary">How did BO choose? <span aria-hidden="true">→</span></button></div>
+      <div class="card plot-card"><div id="game-plot" class="plot" aria-label="Function observation plot"></div>
+        <form id="guess-form" class="guess-controls"><div><label for="guess">Your next input x</label><div class="inline"><input id="guess" type="number" min="0" max="1" step="any" placeholder="0 to 1" required><button id="evaluate" class="primary" type="submit">Evaluate guess</button></div></div><p id="guess-hint">Click anywhere along the plot to select an input, then evaluate.</p></form>
+      </div>
+      <p id="status" role="status" aria-live="polite" class="status"></p>
+      <div id="exports" class="export-controls" hidden><button id="export-json" class="quiet">Export match JSON</button><button id="export-reveal" class="quiet">Export reveal SVG</button><button id="same-game" class="quiet">Play this challenge again</button></div>
+    </section>
+
+    <section id="replay" class="card replay" hidden aria-labelledby="replay-title">
+      <div class="replay-heading"><div><p class="eyebrow">INSIDE THE ALGORITHM</p><h2 id="replay-title">What BO knew. Why it chose.</h2></div><button id="close-replay" class="quiet">Back to results</button></div>
+      <div class="replay-controls"><button id="previous" class="quiet">← Previous</button><label for="replay-step">BO turn <select id="replay-step"></select></label><button id="next" class="quiet">Next →</button><label class="checkbox"><input id="overlay" type="checkbox"> Show hidden function as reference</label></div>
+      <div class="replay-stats" id="replay-stats"></div>
+      <div id="posterior-plot" class="plot"></div><div id="acquisition-plot" class="plot"></div>
+      <div class="replay-bottom"><button id="reveal-step" class="primary">Reveal this evaluation</button><p id="replay-explanation" role="status" aria-live="polite"></p><button id="export-replay" class="quiet">Export replay SVG</button></div>
+      <p class="small">The band is pointwise posterior uncertainty under the chosen GP model. It is not a guaranteed bound on the hidden function.</p>
+    </section>
+    <footer><span>Group 14 · Perspectives in Mathematics</span><span>Noise-free · One dimension · Expected improvement</span></footer>
+  </main>
+  <dialog id="reset-dialog"><h2>Leave this match?</h2><p>Your current progress will be discarded.</p><div class="inline"><button id="cancel-reset" class="quiet">Keep playing</button><button id="confirm-reset" class="primary">Start a new game</button></div></dialog>
+  <noscript>This local game needs JavaScript enabled.</noscript>
+</body>
+</html>

@@ -1,0 +1,4 @@
+# Isolated Sites source checkout and generated public assets
+.sites-source/
+.github-pages-source/
+dist/
