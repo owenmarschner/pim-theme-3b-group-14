@@ -93,6 +93,25 @@ test('replay uses the original before/after histories without changing scores or
   assert.equal(JSON.stringify(match), original);
 });
 
+test('replay uses the same y axes across turns, reveals and reference overlays', () => {
+  const match = finish({ turns: 3 }, [0.25, 0.6, 0.8]);
+  const yAxis = svg => svg.match(/<text x="68"[^>]*>[^<]*<\/text>/g);
+  for (const compact of [false, true]) {
+    const first = replaySVG(match, 0, { compact });
+    const posteriorAxis = yAxis(first.posterior);
+    const acquisitionAxis = yAxis(first.acquisition);
+    assert.ok(posteriorAxis?.length >= 2);
+    assert.ok(acquisitionAxis?.length >= 2);
+    for (let i = 0; i < match.history.length; i++) {
+      for (const revealed of [false, true]) {
+        const plots = replaySVG(match, i, { compact, after: revealed, overlay: revealed });
+        assert.deepEqual(yAxis(plots.posterior), posteriorAxis);
+        assert.deepEqual(yAxis(plots.acquisition), acquisitionAxis);
+      }
+    }
+  }
+});
+
 test('live SVG reveals no hidden BO values, curve, or scale information', () => {
   const match = takeTurn(createMatch(), 0.25);
   const live = gameSVG(match);

@@ -1,0 +1,245 @@
+\section{Educational Demonstration: Making Sequential Decisions Visible}
+\label{sec:educational-demo}
+
+\subsection{Purpose and learning objectives}
+
+To connect the preceding mathematics to observable decisions, we developed
+an interactive game, \emph{You vs Bayesian Optimisation}. A human player
+and a Bayesian optimisation (BO) algorithm search the same hidden
+function, with the objective of obtaining the highest function value
+within a fixed evaluation budget. The game is available at
+\url{https://owenmarschner.github.io/you-vs-bo/}.
+
+The intended audience is undergraduate mathematics students familiar with
+basic probability, calculus and linear algebra, who have encountered
+Gaussian processes and expected improvement through the preceding
+sections. The demonstration has three learning objectives:
+\begin{enumerate}
+    \item interpret the distinction between a model's predictions,
+    its uncertainty and the function values actually observed;
+    \item explain how expected improvement converts predictions and
+    uncertainty into a choice of the next input;
+    \item recognise why a limited evaluation budget does not guarantee
+    discovery of the global maximum.
+\end{enumerate}
+
+Playing the game makes the decision problem concrete. Before seeing
+the hidden function, players must commit to an input using incomplete
+information. The subsequent replay allows them to examine
+BO's decisions under the same restriction. The emphasis is therefore on
+explaining decisions using the information available when they were made,
+rather than judging them solely with hindsight.
+
+
+\subsection{Game structure and information available}
+\label{subsec:demo-rules}
+
+Both players begin with the same three observations, at
+\[
+    x=0.1,\qquad x=0.5,\qquad x=0.9.
+\]
+Each then receives five additional guesses by default, giving a total
+budget of eight evaluations per player. The number of additional
+guesses can be changed before a match, from three to ten.
+
+On each turn, the human selects an input on the plot, where guesses are
+spaced at intervals of \(0.01\). The \emph{Evaluate guess} button
+evaluates the function at that input and displays the result. BO then
+performs one evaluation using its own observation history. The players' subsequent observations
+are kept separate: BO does not learn from the human's guesses, and the
+human cannot see BO's chosen inputs, results or best value until the
+match ends.
+
+Hiding BO's inputs as well as its outputs is important. Even without
+seeing the corresponding function values, the human could otherwise
+infer which regions the algorithm considered promising and use that
+information in later guesses. During play, the human's plot therefore
+contains only their own observations. These points are not joined by
+lines, since the function values between them remain unknown.
+
+For player \(p\), let \(\mathcal{D}_p\) denote all observations available
+to that player at the end of the match. Their score is
+\[
+    S_p=\max\{y:(x,y)\in\mathcal{D}_p\}.
+\]
+Thus the score includes the shared initial observations and depends on
+the best value found at any stage, rather than the final guess or the
+largest predicted value. The higher score wins; differences no greater
+than \(10^{-9}\) are treated as a draw. Once both budgets are exhausted,
+the function and both sets of observations are revealed.
+
+This is a comparison between human intuition and the combination of a
+GP model with an EI decision rule. The human is not supplied with a GP
+during play, so the game does not isolate the effect of the acquisition
+function alone.
+
+\begin{figure}[htbp]
+    \centering
+    \IfFileExists{figures/demo-game.png}{
+        \includegraphics[width=0.9\linewidth]{figures/demo-game.png}
+    }{
+        \fbox{\parbox[c][3.5cm][c]{0.85\linewidth}{
+            \centering
+            Game screenshot:
+            upload \texttt{figures/demo-game.png}.
+        }}
+    }
+    \caption{The game during the human player's search. The plot shows
+    observed function values, while the score and remaining budget
+    summarise progress. Selecting an input does not reveal its value
+    until evaluation is confirmed. BO's search locations and results
+    remain hidden.}
+    \label{fig:demo-game}
+\end{figure}
+
+
+\subsection{Mathematical model and implementation}
+\label{subsec:demo-numerics}
+
+The demonstration considers continuous, noise-free functions on
+\([0,1]\). Synthetic objectives are constructed from three smooth peaks:
+\[
+    f(x)=\sum_{j=1}^{3}
+    a_j\exp\left(
+        -\frac{(x-c_j)^2}{2w_j^2}
+    \right),
+\]
+where \(a_j\), \(c_j\) and \(w_j\) specify each peak's amplitude, centre
+and width. A seed determines these parameters, so entering the same
+seed reproduces the same hidden function. Different seeds vary the peak
+locations, heights and widths, although overlapping components can
+produce fewer than three distinct local maxima. Before playing, the
+human is told that the function is smooth, can have several peaks of
+different widths and typically has high values in the hundreds.
+
+These functions are inexpensive to evaluate. Their role is to simulate
+the information restriction of an expensive experiment: the players
+receive only a small number of evaluations, even though the software
+could calculate other values. The function definition is not supplied
+to BO's acquisition-selection routine.
+
+BO uses the GP and noise-free EI framework described earlier
+\cite{frazier2018tutorial}. Its prior has zero mean and a
+squared-exponential kernel with length scale \(0.15\) and prior
+standard deviation \(200\) at each input. The length scale implies a
+prior correlation of about \(0.61\) between function values at inputs
+that are \(0.15\) apart. These hyperparameters remain fixed throughout
+a match. At each turn, the posterior is conditioned on BO's observations and EI is
+calculated relative to BO's best observed value. The next input
+maximises this acquisition score approximately.
+
+Specifically, acquisition maximisation uses the candidate grid
+\[
+    \mathcal{G}
+    =
+    \left\{
+        \frac{i}{2000}:i=0,\ldots,2000
+    \right\}.
+\]
+Previously sampled BO inputs are excluded, and exact numerical ties
+are resolved by selecting the lowest input. This produces a transparent,
+reproducible approximation to continuous acquisition maximisation.
+Calculating predictions and EI at the grid points does not consume
+objective evaluations: only evaluating the selected input does.
+
+GP conditioning is implemented through Cholesky solves, with diagonal
+jitter equal to \(10^{-10}\) times the signal variance for numerical
+stability. The model treats function evaluations as noise-free.
+The implementation also handles the zero-uncertainty limit of EI and
+clamps small negative variances caused by floating-point rounding.
+A numerical failure preserves the previous match state rather than
+silently replacing BO with another search strategy.
+
+Checks of the mathematical implementation include comparison of GP
+predictions with independently calculated small conditioning examples,
+and comparison of EI with numerical integration. Additional tests check
+equal budgets, independent observation histories, reproducibility and
+scoring. These establish aspects of software correctness; they do not
+by themselves establish educational effectiveness.
+
+
+\subsection{Explaining BO through a decision replay}
+\label{subsec:demo-decisions}
+
+The competitive and explanatory stages are separated deliberately.
+Showing BO's posterior and acquisition function during the match would
+provide the human with information derived from BO's private
+observations. Instead, the completed game provides a step-by-step
+replay of the algorithm's reasoning.
+
+Before each recorded BO evaluation, the replay displays the observations
+available at that time, the GP posterior mean, and a shaded pointwise
+\(95\%\) posterior band. Below this, the EI curve is shown with the
+selected input marked. Numerical readouts give the predicted mean,
+posterior standard deviation and EI at that input. This connects the
+geometrical picture to the quantities used in the acquisition rule
+\cite{frazier2018tutorial}.
+
+The viewer can then reveal the evaluation. The new observation is added
+and the posterior updates. The lower plot retains the original
+pre-decision EI curve, making it possible to distinguish why the input
+was selected from what was learned afterwards. Both plots use fixed
+vertical scales across the replay so that viewers can compare turns
+directly. The true function can be shown as a reference overlay and is
+initially hidden within the replay.
+
+The shaded band requires careful interpretation. It describes pointwise
+posterior uncertainty under the chosen GP assumptions; it is neither a
+guaranteed error bound nor a statement that the entire function lies
+inside the band with probability \(0.95\).
+
+The replay lets viewers compare the roles of predicted value and
+uncertainty. An input with a mean below the best observed value can
+still have high EI if its posterior assigns enough probability to
+substantially better values. An input near a promising observation can
+also have high EI when its predicted mean is high, even if its
+uncertainty is lower.
+
+\begin{figure}[htbp]
+    \centering
+    \IfFileExists{figures/demo-replay.png}{
+        \includegraphics[width=0.95\linewidth]{figures/demo-replay.png}
+    }{
+        \fbox{\parbox[c][4.5cm][c]{0.88\linewidth}{
+            \centering
+            Replay screenshot:
+            upload \texttt{figures/demo-replay.png}.
+        }}
+    }
+    \caption{The BO decision replay before evaluation. The upper panel
+    shows the posterior mean, observations and pointwise \(95\%\)
+    posterior band. The lower panel shows EI and marks the selected
+    input. Its outcome is revealed separately.}
+    \label{fig:demo-replay}
+\end{figure}
+
+
+\subsection{Interpretation and limitations}
+\label{subsec:demo-limitations}
+
+The demonstration makes the consequences of sequential decisions
+visible. Each new observation changes the information available to BO,
+which can alter both its predictions and its next acquisition maximiser.
+The replay connects these changes to the mathematical framework:
+a selected input reflects the possibility of improvement under the
+current posterior, while its eventual function value determines whether
+that possibility is realised. A decision with high expected improvement
+can therefore produce no improvement in the observed score.
+
+Several limitations affect the interpretation of the game. Its small
+evaluation budget can leave important regions unexplored, and its fixed
+kernel hyperparameters determine which function shapes the model
+considers plausible. In particular, inappropriate assumptions about
+length scale can produce misleading predictions and uncertainty.
+Furthermore, acquisition maximisation takes place on a finite grid,
+so the selected input only approximates a continuous acquisition
+maximiser. Revealing the hidden function helps identify missed features,
+but neither the winning score nor the reveal certifies that a player
+has found the global maximum.
+
+The demonstration is consequently an explanatory example rather than
+a performance benchmark. Assessing when BO is useful requires repeated
+comparisons that control the initial observations and evaluation
+budgets, account for variability, and examine sensitivity to modelling
+choices. Section~5 develops this assessment by comparing EI, UCB and
+uniform random search on contrasting test functions.

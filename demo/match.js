@@ -1,19 +1,24 @@
 import { ENGINE_VERSION, GENERATOR_VERSION, MODEL, INITIAL_INPUTS, GRID_SIZE,
   makeObjective, evaluateObjective, selectNext } from './engine.js';
 
+export const GAME_VALUE_SCALE = 200;
 export const STORAGE_KEY = 'you-vs-bo-match-v1';
 export const bestValue = points => Math.max(...points.map(point => point.y));
 export const isComplete = match => match.history.length === match.turns;
 
-export function createMatch({ mode = 'presentation', seed = 'classroom-1', turns = 5 } = {}) {
+export function createMatch({ mode = 'presentation', seed = 'classroom-1', turns = 5, valueScale = 1 } = {}) {
   if (!Number.isInteger(turns) || turns < 3 || turns > 10) throw new Error('Choose 3–10 guesses per player.');
   if (typeof seed !== 'string' || seed.length > 120) throw new Error('Seeds must contain at most 120 characters.');
+  if (![1, GAME_VALUE_SCALE].includes(valueScale)) throw new Error('Unsupported function value scale.');
   const objective = makeObjective(mode, seed);
+  for (const peak of objective.peaks) peak.amplitude *= valueScale;
+  const model = { ...MODEL, signalVariance: MODEL.signalVariance * valueScale ** 2,
+    jitter: MODEL.jitter * valueScale ** 2 };
   const initial = INITIAL_INPUTS.map(x => ({ x, y: evaluateObjective(objective, x) }));
   return {
     version: ENGINE_VERSION, generatorVersion: GENERATOR_VERSION, mode,
     seed: mode === 'presentation' ? 'presentation-v1' : seed,
-    turns, model: { ...MODEL }, gridSize: GRID_SIZE, objective,
+    turns, ...(valueScale === 1 ? {} : { valueScale }), model, gridSize: GRID_SIZE, objective,
     initial, human: initial.map(point => ({ ...point })), bo: initial.map(point => ({ ...point })), history: [],
   };
 }

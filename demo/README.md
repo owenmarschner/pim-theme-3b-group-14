@@ -30,11 +30,11 @@ npm run fallback  # Regenerate the documented static example and SVG figures
 
 ## Play
 
-1. Choose the prepared Presentation example or a seeded Random challenge. Seeds are exact, case-sensitive strings (including any spaces). Select 3–10 additional guesses each; default five.
+1. Enter a seed or choose **New seed**. Seeds are exact, case-sensitive strings (including any spaces). Select 3–10 additional guesses each; default five.
 2. Both players get observations at x = 0.1, 0.5 and 0.9. These count towards both budgets: the default is eight evaluations per player.
-3. Click the plot or type an input between 0 and 1, then press **Evaluate guess** (or Enter in the input). Clicking alone spends no guess. Repeated inputs are rejected within 1e-12.
+3. Click the plot to select an input in steps of 0.01, then press **Evaluate guess**. You can also focus the graph and select an input with the arrow keys. Selecting a point spends no guess. Repeated inputs are rejected.
 4. Your value appears; BO also evaluates one input privately. Its locations, values and score stay hidden until both finish. Only your observations determine the live chart scale.
-5. Highest observed value wins, including starting observations. Scores use full precision; differences of at most 1e-9 count as a draw. The final result displays 12 decimal places to explain close scores.
+5. Highest observed value wins, including starting observations. Scores use full precision; differences of at most 1e-9 count as a draw. The interface displays at most two decimal places. If the scores round to the same value but the winner differs, the result explains that scoring uses full precision.
 6. Open the replay to inspect BO's GP and EI **before** each decision. **Reveal this evaluation** updates the posterior; the lower EI curve continues to show the original decision. The optional true-function overlay is initially off.
 
 The match is saved after setup and each completed turn. Refresh offers Resume or New Game. Leaving an unfinished match requires confirmation. If storage is unavailable, a warning appears and play still works in the current tab. A numerical failure commits neither player's turn and preserves the previous match; it never substitutes another search strategy.
@@ -42,10 +42,11 @@ The match is saved after setup and each completed turn. Refresh offers Resume or
 ## Maths and numerical choices
 
 - Domain [0, 1]. The objective is the sum, over three peaks, of `amplitude * exp(-0.5 * ((x - centre) / width)^2)`. These are cheap synthetic evaluations standing in for costly experiments.
-- Presentation peaks `(centre, amplitude, width)`: `(0.25, 0.9, 0.1)`, `(0.55, 1.2, 0.06)`, `(0.8, 1.0, 0.08)`. Presentation seed label: `presentation-v1`.
+- Legacy fallback presentation peaks `(centre, amplitude, width)`: `(0.25, 0.9, 0.1)`, `(0.55, 1.2, 0.06)`, `(0.8, 1.0, 0.08)`. Presentation seed label: `presentation-v1`.
+- New browser games multiply peak amplitudes and GP prior standard deviation by 200, so candidate rankings remain comparable on the larger score scale. Saved games and the original fallback use their recorded scale.
 - Random generation version: `fnv1a-mulberry32-peaks-v1`. Hash the seed's UTF-16 code units using FNV-1a, then use Mulberry32. Draw centre, amplitude, width for each peak in left-to-right order. Centre intervals: [0.1, 0.3), [0.4, 0.6), [0.7, 0.9); amplitude [0.5, 1.5); width [0.04, 0.12). Some sums can have fewer distinct maxima because peaks overlap.
-- GP prior: zero mean; squared-exponential kernel `exp(-0.5 * ((x-x')/0.15)^2)`. Signal variance 1, fixed length scale 0.15; no hyperparameter fitting or observation noise.
-- Cholesky conditioning uses diagonal jitter 1e-10 for numerical stability, not a claim of measurement noise. Posterior uncertainty at observations is therefore tiny rather than exactly zero. Variances between -1e-7 and zero are clamped; larger negative or nonfinite values stop the calculation.
+- GP prior: zero mean; squared-exponential kernel `exp(-0.5 * ((x-x')/0.15)^2)`. Signal variance 40,000 in new games and 1 on the original scale, with fixed length scale 0.15; no hyperparameter fitting or observation noise.
+- Cholesky conditioning uses diagonal jitter of 1e-10 times the signal variance for numerical stability, not a claim of measurement noise. Posterior uncertainty at observations is therefore tiny rather than exactly zero. Variances between -1e-7 and zero are clamped; larger negative or nonfinite values stop the calculation.
 - Noise-free EI: improvement relative to BO's best observed value. Use the Gaussian closed form and its deterministic limit for standard deviation at most 1e-12. The normal CDF uses Abramowitz–Stegun 26.2.17 (absolute CDF error below 7.5e-8); EI is clamped nonnegative against rounding.
 - Maximise EI on all 2,001 grid inputs `i/2000`, including boundaries. Exclude previously sampled BO inputs within 1e-12; exact computed ties use the lowest input. This approximates continuous acquisition optimisation. The graph thins curves for display only.
 - Shaded replay bands are `mean ± 1.96 * sd`: **pointwise, model-dependent** 95% posterior bands, not simultaneous bands or guaranteed error bounds.
@@ -69,7 +70,7 @@ After a match, export its JSON (parameters, seed, model, budgets, observations, 
 
 | Time | Action and teaching prompt |
 | --- | --- |
-| 0:00–0:30 | Start Presentation mode, five guesses each. Explain equal budgets, shared observations and highest-observed-value scoring. |
+| 0:00–0:30 | Enter a rehearsed seed and start with five guesses each. Explain equal budgets, shared observations and highest-observed-value scoring. |
 | 0:30–2:00 | Ask the audience for five inputs; the presenter clicks/types and confirms. Ask for a mixture of promising and unexplored locations. Keep BO's results hidden. |
 | 2:00–2:40 | Reveal scores and function. Identify a discovered peak and any region neither player sampled well. Winning this match does not establish general superiority. |
 | 2:40–4:30 | Replay two contrasting BO decisions (suggested turns 1 and 2). Before revealing each outcome, connect the mean and uncertainty to the EI maximum. Reveal and show the posterior update. |

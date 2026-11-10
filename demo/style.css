@@ -6,19 +6,21 @@ main { max-width: 1232px; padding: 32px 36px 18px; margin: auto; }
 h1,h2,h3,p { margin: 0; }
 h1 { font-size: clamp(25px, 3.1vw, 40px); letter-spacing: -1.5px; font-weight: 700; line-height: 1.2; }
 h1 span { font-weight: 400; color: #7a8999; padding: 0 6px; }
+.intro { color: var(--muted); margin-top: 10px; }
 h2 { font-size: 28px; letter-spacing: -.8px; line-height: 1.25; }
 h3 { font-size: 20px; margin-bottom: 18px; }
-.eyebrow { font-size: 11px; font-weight: 750; letter-spacing: 2px; margin-bottom: 10px; color: var(--muted); }
-.intro { color: var(--muted); margin-top: 10px; }
 .masthead { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 30px; }
 .card { background: white; border: 1px solid var(--line); border-radius: 16px; box-shadow: 0 4px 24px #22374c04; }
 .setup { display: grid; grid-template-columns: 1.1fr 1fr; overflow: hidden; }
 .setup-intro { padding: 48px; background: #edf3fb; border-right: 1px solid var(--line); }
-.section-number { font-size: 11px; font-weight: 750; letter-spacing: 2px; color: var(--blue); }
-.setup-intro h2 { font-size: clamp(28px, 3.6vw, 43px); margin: 32px 0 22px; }
-.setup-intro p { max-width: 390px; margin-top: 16px; color: var(--muted); }
-.challenge-rules { max-width: 390px; margin: 0; padding-left: 22px; color: var(--muted); }
+.setup-intro h2 { margin: 0 0 16px; }
+.goal { margin-bottom: 14px; }
+.challenge-rules { margin: 0; padding-left: 22px; color: var(--muted); }
 .challenge-rules li { padding-left: 3px; margin: 9px 0; }
+.setup-help { display: grid; gap: 10px; justify-items: start; }
+.setup-help button { white-space: normal; text-align: left; }
+dialog form { margin-top: 16px; }
+.seed-help { margin-top: 8px; }
 #setup-form { padding: 38px 42px; }
 label { display: block; font-size: 13px; font-weight: 650; margin: 16px 0 7px; }
 input, select, button { font: inherit; }
@@ -31,7 +33,7 @@ button:hover { filter: brightness(.96); }
 button:disabled { opacity: .45; cursor: not-allowed; }
 .primary { background: var(--blue); color: white; }
 .quiet { background: white; border-color: var(--line); color: var(--ink); }
-.full { width: 100%; margin-top: 24px; display: flex; justify-content: space-between; }
+.full { width: 100%; margin-top: 24px; }
 .small { font-size: 13px; color: var(--muted); }
 .inline { display: flex; gap: 9px; align-items: center; }
 .inline input { flex: 1; min-width: 0; }
@@ -54,49 +56,46 @@ output { display: grid; place-items: center; min-width: 44px; height: 44px; bord
 .plot-card { overflow: hidden; }
 .plot svg { display: block; width: 100%; height: auto; }
 #game-plot.playing { cursor: crosshair; }
-.guess-controls { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 0 28px 22px; }
-.guess-controls label { margin-top: 0; }
-.guess-controls input { width: 150px; }
-.guess-controls p { color: var(--muted); font-size: 13px; max-width: 290px; }
+.plot-controls { padding: 18px 24px 12px; border-bottom: 1px solid var(--line); }
+.guess-controls { display: flex; align-items: center; gap: 14px; margin-top: 12px; }
+.plot-controls .quiet { white-space: normal; }
+.plot-controls .inline, .replay-heading .inline { flex-wrap: wrap; }
+.plot-controls .status { margin: 8px 0 0; min-height: 0; }
+.plot-controls .status:empty, #result-detail:empty { display: none; }
+.guess-controls p { color: var(--muted); font-size: 13px;  }
 .status { margin: 12px 3px; min-height: 24px; font-size: 14px; color: var(--muted); }
 .error, .status.error { color: #a32229; }
 .error { margin-top: 10px; font-size: 14px; }
 .result { display: flex; justify-content: space-between; align-items: center; padding: 23px 28px; gap: 22px; background: #eaf1fb; border: 1px solid #c8d9f2; border-radius: 12px; margin-bottom: 18px; }
-.result .eyebrow { margin-bottom: 5px; }
-.result p:not(.eyebrow) { margin-top: 8px; font-size: 14px; }
-.export-controls { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+.match-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
 .replay { margin-top: 24px; padding: 26px; }
 .replay-heading { display: flex; justify-content: space-between; align-items: center; gap: 18px; }
 .replay-controls { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin: 22px 0 14px; }
-.replay-controls label { display: flex; align-items: center; gap: 8px; margin: 0; }
-.replay-controls select { width: 66px; }
-.checkbox { margin-left: auto !important; font-weight: 400; }
+.checkbox { display: flex; align-items: center; gap: 8px; margin: 0; font-weight: 400; }
 .checkbox input { min-height: 20px; width: 18px; height: 18px; accent-color: var(--orange); }
 .replay-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
 .replay-stats div { background: #f7f9fb; border-radius: 7px; padding: 9px 14px; }
 .replay-stats span { display: block; font-size: 11px; color: var(--muted); }
 .replay-stats strong { font-size: 19px; font-variant-numeric: tabular-nums; }
-.replay-bottom { display: flex; gap: 16px; align-items: center; margin-bottom: 16px; }
-.replay-bottom p { flex: 1; font-size: 13px; }
+.replay-bottom { display: flex; gap: 16px; align-items: center; margin: 12px 0 16px; }
 footer { display: flex; justify-content: space-between; gap: 12px; padding: 25px 0 0; color: #647588; font-size: 11px; }
-dialog { max-width: min(460px, 90vw); border: 1px solid var(--line); border-radius: 15px; padding: 30px; color: var(--ink); }
+dialog { max-width: min(580px, 90vw); max-height: 85vh; border: 1px solid var(--line); border-radius: 15px; padding: 30px; color: var(--ink); }
 dialog::backdrop { background: #192d4366; }
 dialog p { margin: 15px 0 24px; }
 @media (min-width: 900px) and (max-height: 800px) {
   main { padding-top: 18px; }
   .masthead { margin-bottom: 18px; }
-  .masthead .eyebrow { margin-bottom: 6px; }
   h1 { font-size: 31px; }
   .intro { font-size: 14px; margin-top: 5px; }
   .score { padding: 10px 20px; }
   #game-plot svg { max-height: 350px; }
   .replay-mode main { max-width: 1060px; padding-top: 10px; padding-bottom: 10px; }
-  .replay-mode .masthead, .replay-mode footer { display: none; }
+  .replay-mode footer { display: none; }
+  .replay-mode .masthead { margin-bottom: 10px; }
   .replay-mode .replay { margin-top: 0; padding: 16px; }
-  .replay-mode .replay-heading .eyebrow, .replay-mode .replay > .small { display: none; }
   .replay-mode .replay-heading h2 { font-size: 24px; }
   .replay-mode .replay-controls { margin: 8px 0; }
-  .replay-mode .replay-heading button, .replay-mode .replay-controls button, .replay-mode .replay-controls select { min-height: 36px; padding: 6px 12px; }
+  .replay-mode .replay-heading button, .replay-mode .replay-controls button { min-height: 36px; padding: 6px 12px; }
   .replay-mode .replay-stats div { padding: 5px 10px; }
   .replay-mode .replay-bottom { margin-bottom: 0; gap: 12px; }
 }
@@ -106,18 +105,15 @@ dialog p { margin: 15px 0 24px; }
   .masthead { align-items: start; flex-wrap: wrap; }
   .setup { grid-template-columns: 1fr; }
   .setup-intro { padding: 28px; border-right: 0; border-bottom: 1px solid var(--line); }
-  .setup-intro h2 { margin-top: 20px; }
   #setup-form { padding: 26px; }
   .scoreboard { grid-template-columns: 1fr 1fr; }
   .match-meta { grid-column: 1 / -1; grid-row: 2; }
   .score { padding: 14px; }
   .score strong { font-size: 23px; }
   .guess-controls, .result, .resume, .replay-heading, .replay-bottom { flex-direction: column; align-items: stretch; }
-  .guess-controls { padding: 12px 18px 18px; gap: 12px; }
-  .guess-controls input { width: 100px; }
+  .plot-controls { padding: 14px 16px; }
   .replay { padding: 16px 10px; }
   .replay-stats { grid-template-columns: 1fr 1fr; }
-  .checkbox { margin-left: 0 !important; }
   .plot { overflow-x: auto; }
   .plot svg { min-width: 590px; }
   footer { flex-direction: column; }
